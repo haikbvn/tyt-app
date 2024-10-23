@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Loader2 } from "lucide-react"
+import { useForm } from "react-hook-form"
 
-import { signinSchema, type SigninForm } from "@/lib/schemas";
-import { Button } from "@/components/ui/button";
+import { signinSchema, type SigninForm } from "@/lib/schemas"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -13,19 +13,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 
 interface SigninFormProps {
-  onSubmit: (values: SigninForm) => Promise<void>;
-  isLoading: boolean;
+  onSubmit: (values: SigninForm) => Promise<void>
+  isLoading: boolean
 }
 
 export function SigninForm({ onSubmit, isLoading }: SigninFormProps) {
   const form = useForm<SigninForm>({
     resolver: zodResolver(signinSchema),
     defaultValues: { username: "", password: "" },
-  });
+  })
 
   return (
     <Form {...form}>
@@ -66,5 +66,5 @@ export function SigninForm({ onSubmit, isLoading }: SigninFormProps) {
         </Button>
       </form>
     </Form>
-  );
+  )
 }

@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Loader2 } from "lucide-react"
+import { useForm } from "react-hook-form"
 
-import { otpSchema, type OTPForm } from "@/lib/schemas";
-import { Button } from "@/components/ui/button";
+import { otpSchema, type OTPForm } from "@/lib/schemas"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -14,23 +14,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from "@/components/ui/form"
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-} from "@/components/ui/input-otp";
+} from "@/components/ui/input-otp"
 
 interface OTPFormProps {
-  onSubmit: (values: OTPForm) => Promise<void>;
-  isLoading: boolean;
+  onSubmit: (values: OTPForm) => Promise<void>
+  isLoading: boolean
 }
 
 export function OTPForm({ onSubmit, isLoading }: OTPFormProps) {
   const form = useForm<OTPForm>({
     resolver: zodResolver(otpSchema),
     defaultValues: { otp: "" },
-  });
+  })
 
   return (
     <Form {...form}>
@@ -66,5 +66,5 @@ export function OTPForm({ onSubmit, isLoading }: OTPFormProps) {
         </Button>
       </form>
     </Form>
-  );
+  )
 }

@@ -1,6 +1,6 @@
-import Link from "next/link";
+import Link from "next/link"
 
-import { PageHeader } from "@/components/page-header";
+import { PageHeader } from "@/components/page-header"
 
 export default function HsskImport() {
   return (
@@ -10,5 +10,5 @@ export default function HsskImport() {
         <Link href="/">Home</Link>
       </div>
     </div>
-  );
+  )
 }

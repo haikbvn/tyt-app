@@ -1,5 +1,6 @@
 /** @type {import('prettier').Config} */
 module.exports = {
+  semi: false,
   trailingComma: "es5",
   importOrder: [
     "^(react/(.*)$)|^(react$)",
@@ -24,4 +25,4 @@ module.exports = {
     "@ianvs/prettier-plugin-sort-imports",
     "prettier-plugin-tailwindcss",
   ],
-};
+}

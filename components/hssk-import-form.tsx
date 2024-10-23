@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Loader2 } from "lucide-react"
+import { useForm } from "react-hook-form"
 
-import { excelSchema, type ExcelForm } from "@/lib/schemas";
-import { Button } from "@/components/ui/button";
+import { excelSchema, type ExcelForm } from "@/lib/schemas"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -13,12 +13,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 
 interface ExcelFormProps {
-  onSubmit: (values: ExcelForm) => Promise<void>;
-  isLoading: boolean;
+  onSubmit: (values: ExcelForm) => Promise<void>
+  isLoading: boolean
 }
 
 export function ExcelForm({ onSubmit, isLoading }: ExcelFormProps) {
@@ -29,7 +29,7 @@ export function ExcelForm({ onSubmit, isLoading }: ExcelFormProps) {
       startRow: 1,
       endRow: 1,
     },
-  });
+  })
 
   return (
     <Form {...form}>
@@ -91,5 +91,5 @@ export function ExcelForm({ onSubmit, isLoading }: ExcelFormProps) {
         </Button>
       </form>
     </Form>
-  );
+  )
 }

@@ -1,36 +1,36 @@
-import { create } from "zustand";
-import { persist, PersistStorage } from "zustand/middleware";
+import { create } from "zustand"
+import { persist, PersistStorage } from "zustand/middleware"
 
 // Định nghĩa kiểu cho store
 interface TokenStore {
-  token: string | null;
-  expiresAt: number | null;
-  setAccessToken: (token: string, expiresIn: number) => void;
-  isTokenValid: () => boolean;
-  loadTokenFromStorage: () => string | null;
-  clearToken: () => void;
+  token: string | null
+  expiresAt: number | null
+  setAccessToken: (token: string, expiresIn: number) => void
+  isTokenValid: () => boolean
+  loadTokenFromStorage: () => string | null
+  clearToken: () => void
 }
 
 const customStorage: PersistStorage<TokenStore> = {
   getItem: (key) => {
-    const value = localStorage.getItem(key);
+    const value = localStorage.getItem(key)
     if (value === null) {
-      return null;
+      return null
     }
     try {
-      return JSON.parse(value);
+      return JSON.parse(value)
     } catch (error) {
-      console.error("Error parsing stored value:", error);
-      return null;
+      console.error("Error parsing stored value:", error)
+      return null
     }
   },
   setItem: (key, value) => {
-    localStorage.setItem(key, JSON.stringify(value));
+    localStorage.setItem(key, JSON.stringify(value))
   },
   removeItem: (key) => {
-    localStorage.removeItem(key);
+    localStorage.removeItem(key)
   },
-};
+}
 
 // Tạo Zustand store với persist
 export const useTokenStore = create<TokenStore>()(
@@ -39,16 +39,16 @@ export const useTokenStore = create<TokenStore>()(
       token: null,
       expiresAt: null,
       setAccessToken: (token: string, expiresIn: number) => {
-        const expiresAt = Date.now() + expiresIn * 1000; // Lưu thời gian hết hạn
-        set({ token, expiresAt });
+        const expiresAt = Date.now() + expiresIn * 1000 // Lưu thời gian hết hạn
+        set({ token, expiresAt })
       },
       isTokenValid: () => {
-        const { token, expiresAt } = get();
-        return token !== null && expiresAt !== null && expiresAt > Date.now();
+        const { token, expiresAt } = get()
+        return token !== null && expiresAt !== null && expiresAt > Date.now()
       },
       loadTokenFromStorage: () => {
-        const { token, isTokenValid } = get();
-        return isTokenValid() ? token : null;
+        const { token, isTokenValid } = get()
+        return isTokenValid() ? token : null
       },
       clearToken: () => set({ token: null, expiresAt: null }),
     }),
@@ -57,4 +57,4 @@ export const useTokenStore = create<TokenStore>()(
       storage: customStorage, // Sử dụng localStorage
     }
   )
-);
+)
