@@ -3,13 +3,13 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
+import { z } from "zod"
 
-import { otpSchema, type OTPForm } from "@/lib/schemas"
+import { otpSchema } from "@/lib/validations/auth"
 import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -22,12 +22,23 @@ import {
 } from "@/components/ui/input-otp"
 
 interface OTPFormProps {
-  onSubmit: (values: OTPForm) => Promise<void>
+  onSubmit: (values: z.infer<typeof otpSchema>) => Promise<void>
+  onResend?: () => Promise<void>
+  onBack?: () => void
+  canResend?: boolean
+  timeLeft?: number
   isLoading: boolean
 }
 
-export function OTPForm({ onSubmit, isLoading }: OTPFormProps) {
-  const form = useForm<OTPForm>({
+export function OTPForm({
+  onSubmit,
+  onResend,
+  onBack,
+  canResend = false,
+  timeLeft = 0,
+  isLoading,
+}: OTPFormProps) {
+  const form = useForm<z.infer<typeof otpSchema>>({
     resolver: zodResolver(otpSchema),
     defaultValues: { otp: "" },
   })
@@ -40,7 +51,9 @@ export function OTPForm({ onSubmit, isLoading }: OTPFormProps) {
           name="otp"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>One-Time Password</FormLabel>
+              <FormLabel>
+                Vui lòng nhập mã OTP đã được gửi tới số điện thoại của bạn.
+              </FormLabel>
               <FormControl>
                 <InputOTP maxLength={6} {...field}>
                   <InputOTPGroup className="w-full *:flex-1">
@@ -53,17 +66,38 @@ export function OTPForm({ onSubmit, isLoading }: OTPFormProps) {
                   </InputOTPGroup>
                 </InputOTP>
               </FormControl>
-              <FormDescription>
-                Please enter the one-time password sent to your phone.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isLoading} className="w-full">
+
+        <p className="text-sm text-muted-foreground">
+          {canResend ? "Mã OTP đã hết hạn!" : `Mã OTP hết hạn sau ${timeLeft}s`}
+        </p>
+
+        <Button
+          type={canResend ? "button" : "submit"}
+          disabled={isLoading}
+          onClick={canResend ? onResend : undefined}
+          className="w-full"
+        >
           {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-          Verify OTP
+          {canResend ? "Gửi lại OTP" : "Xác nhận OTP"}
         </Button>
+
+        <div className="flex flex-col items-center justify-stretch space-y-2">
+          <p>Hoặc quay lại đăng nhập bằng tài khoản khác!</p>
+
+          <Button
+            type="button"
+            disabled={isLoading}
+            onClick={onBack}
+            variant="ghost"
+            className="w-full"
+          >
+            Back
+          </Button>
+        </div>
       </form>
     </Form>
   )

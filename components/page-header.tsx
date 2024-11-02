@@ -1,19 +1,22 @@
-export interface PageHeaderProps {
-  title: string
-  description?: string
+import { cn } from "@/lib/utils"
+
+interface PageHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+  heading: string
+  text?: string
 }
 
-export function PageHeader({ title, description }: PageHeaderProps) {
+export function PageHeader({
+  heading,
+  text,
+  className,
+  ...props
+}: PageHeaderProps) {
   return (
-    <div className="space-y-2">
-      <div>
-        <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-          {title}
-        </h1>
-        {description && (
-          <p className="text-base text-muted-foreground">{description}</p>
-        )}
-      </div>
+    <div className={cn("space-y-2", className)} {...props}>
+      <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+        {heading}
+      </h1>
+      {text && <p className="text-base text-muted-foreground">{text}</p>}
     </div>
   )
 }

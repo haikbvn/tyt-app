@@ -1,16 +1,9 @@
 "use client"
 
 import * as React from "react"
-import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  GalleryVerticalEnd,
-  HeartPulse,
-  Settings2,
-} from "lucide-react"
+import { HeartPulse, Settings2 } from "lucide-react"
 
+import { useAuthStore } from "@/store/use-auth-store"
 import {
   Sidebar,
   SidebarContent,
@@ -19,130 +12,87 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { NavMain } from "@/components/nav-main"
-import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { NavUser, NavUserSkeleton } from "@/components/nav-user"
 
-// This is sample data.
-const data = {
-  user: {
-    name: "Hai Nguyen",
-    email: "haikbvn@gmail.com",
-    avatar: "/avatars/me.jpeg",
+import { Organization, OrganizationSkeleton } from "./organization"
+
+const navItems = [
+  {
+    title: "Hồ sơ sức khoẻ",
+    url: "#",
+    icon: HeartPulse,
+    isActive: true,
+    items: [
+      {
+        title: "Nhập lịch sử khám",
+        url: "/hssk/import",
+      },
+    ],
   },
-  teams: [
-    {
-      name: "TYT Viet Doan",
-      logo: GalleryVerticalEnd,
-      plan: "Trung Tam Y Te Tien Du",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
-  navMain: [
-    {
-      title: "Health Record",
-      url: "#",
-      icon: HeartPulse,
-      isActive: true,
-      items: [
-        {
-          title: "Import",
-          url: "/hssk/import",
-        },
-        {
-          title: "Settings",
-          url: "/hssk/settings",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-}
+  {
+    title: "Cài đặt",
+    url: "#",
+    icon: Settings2,
+    items: [
+      {
+        title: "Chung",
+        url: "#",
+      },
+    ],
+  },
+]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { userInfo } = useAuthStore()
+
+  const organization = React.useMemo(() => {
+    if (userInfo) {
+      return {
+        name: userInfo.healthfacilities[0].nameVi,
+        description: userInfo.healthfacilities[0].healthfacilitiesId,
+      }
+    }
+    return null
+  }, [userInfo])
+
+  const userData = React.useMemo(() => {
+    if (userInfo) {
+      return {
+        name: userInfo.fullName,
+        email: userInfo.doctorCode,
+        avatar: userInfo.avatar,
+      }
+    }
+    return null
+  }, [userInfo])
+
+  if (!userInfo) {
+    return (
+      <Sidebar collapsible="icon" {...props}>
+        <SidebarHeader>
+          <OrganizationSkeleton />
+        </SidebarHeader>
+        <SidebarContent>
+          <NavMain items={navItems} />
+        </SidebarContent>
+        <SidebarFooter>
+          <NavUserSkeleton />
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+    )
+  }
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <Organization organization={organization!} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        {/* <NavProjects projects={data.projects} /> */}
+        <NavMain items={navItems} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData!} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

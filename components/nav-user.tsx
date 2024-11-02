@@ -1,14 +1,9 @@
 "use client"
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react"
+import { useRouter } from "next/navigation"
+import { BadgeCheck, Bell, ChevronsUpDown, LogOut } from "lucide-react"
 
+import { useAuthStore } from "@/store/use-auth-store"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -25,17 +20,27 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { Skeleton } from "@/components/ui/skeleton"
 
-export function NavUser({
-  user,
-}: {
+import { Button } from "./ui/button"
+
+interface NavUserProps {
   user: {
     name: string
     email: string
     avatar: string
   }
-}) {
+}
+
+function NavUser({ user }: NavUserProps) {
+  const router = useRouter()
   const { isMobile } = useSidebar()
+  const { logout } = useAuthStore()
+
+  const handleLogout = () => {
+    logout()
+    router.push("/login")
+  }
 
   return (
     <SidebarMenu>
@@ -67,7 +72,7 @@ export function NavUser({
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">HN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{user.name}</span>
@@ -78,29 +83,24 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
                 <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
+                Tài khoản
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
-                Notifications
+                Thông báo
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
-              Log out
+            <DropdownMenuItem className="cursor-pointer">
+              <Button
+                onClick={handleLogout}
+                variant="ghost"
+                className="h-auto p-0"
+              >
+                <LogOut />
+                Đăng xuất
+              </Button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -108,3 +108,29 @@ export function NavUser({
     </SidebarMenu>
   )
 }
+
+function NavUserSkeleton() {
+  return (
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            >
+              <Skeleton className="h-8 w-8 rounded-lg" />
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <Skeleton className="h-4 max-w-[90%] flex-1" />
+                <Skeleton className="mt-1 h-3 max-w-[70%] flex-1" />
+              </div>
+              <Skeleton className="ml-auto size-4" />
+            </SidebarMenuButton>
+          </DropdownMenuTrigger>
+        </DropdownMenu>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  )
+}
+
+export { NavUser, NavUserSkeleton }
